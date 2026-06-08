@@ -1,0 +1,29 @@
+name: CI
+
+on:
+    push:
+        branches: ["main"]
+    pull_request:
+        branches: ["main"]
+    workflow_dispatch:
+
+jobs:
+    tests:
+        runs-on: ubuntu-latest
+        env:
+            DATABASE_URL: "sqlite:///:memory:"
+            SECRET_KEY: "ci-tests-secret-key"
+            ACCESS_TOKEN_EXPIRE_MINUTES: 30
+        steps:
+            - name: checkout repo
+              uses: actions/checkout@v6
+            
+            - name: python setup
+              uses: actions/setup-python@v6
+              with:
+                python-version: "3.14.2"
+            
+            - name: deps setup
+              run: pip install -e ".[dev]"
+            
+            - run: pytest
