@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from backend.api.deps import current_user, database_session
+from backend.core.exceptions import ServiceError
 from backend.models.user import User
 from backend.schemas.habit import (
     HabitCompletionCreate,
@@ -41,8 +42,8 @@ def list_habits(db: Session = Depends(database_session), user: User = Depends(cu
 def get(habit_id: int, db: Session = Depends(database_session), user: User = Depends(current_user)):
     try:
         habit = read_habit(db, user.id, habit_id)
-    except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+    except ServiceError as e:
+        raise HTTPException(status_code=e.code, detail=e.message)
 
     return habit
 
@@ -56,8 +57,8 @@ def update(
 ):
     try:
         habit = update_habit(db, user.id, habit_id, body)
-    except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+    except ServiceError as e:
+        raise HTTPException(status_code=e.code, detail=e.message)
 
     return habit
 
@@ -68,8 +69,8 @@ def delete(
 ):
     try:
         delete_habit(db, user.id, habit_id)
-    except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+    except ServiceError as e:
+        raise HTTPException(status_code=e.code, detail=e.message)
 
 
 @router.get("/{habit_id}/streak", response_model=int, status_code=200)
@@ -78,8 +79,8 @@ def get_streak(
 ):
     try:
         streak_length = calculate_current_streak(db, user.id, habit_id)
-    except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+    except ServiceError as e:
+        raise HTTPException(status_code=e.code, detail=e.message)
 
     return streak_length
 
@@ -90,8 +91,8 @@ def get_completions(
 ):
     try:
         completions = list_completions(db, user.id, habit_id)
-    except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+    except ServiceError as e:
+        raise HTTPException(status_code=e.code, detail=e.message)
 
     return completions
 
@@ -105,8 +106,8 @@ def add_habit_completion(
 ):
     try:
         completion = add_completion(db, user.id, habit_id, body)
-    except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+    except ServiceError as e:
+        raise HTTPException(status_code=e.code, detail=e.message)
 
     return completion
 
@@ -120,5 +121,5 @@ def delete_habit_completion(
 ):
     try:
         delete_completion(db, user.id, habit_id, completion_id)
-    except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+    except ServiceError as e:
+        raise HTTPException(status_code=e.code, detail=e.message)

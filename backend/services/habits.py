@@ -1,6 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from backend.core.exceptions import DuplicateError, ForbiddenError, NotFoundError
 from backend.models.habit import Habit, HabitCompletion
 from backend.schemas.habit import HabitCompletionCreate, HabitCreate, HabitUpdate
 
@@ -20,18 +21,19 @@ def read_habits(db: Session, user_id: int) -> list[Habit]:
 
 
 def read_habit(db: Session, user_id: int, habit_id: int) -> Habit:
-    habit = db.execute(
-        select(Habit).where(Habit.id == habit_id, Habit.user_id == user_id)
-    ).scalar_one_or_none()
+    habit = db.get(Habit, habit_id)
 
     if not habit:
-        raise ValueError("Habit not found")
+        raise NotFoundError()
+    if habit.user_id != user_id:
+        raise ForbiddenError()
 
     return habit
 
 
 def update_habit(db: Session, user_id: int, habit_id: int, data: HabitUpdate) -> Habit:
     habit = read_habit(db, user_id, habit_id)
+
     update_data = data.model_dump(exclude_unset=True)
 
     for attribute, value in update_data.items():
@@ -53,15 +55,16 @@ def delete_habit(db: Session, user_id: int, habit_id: int) -> None:
 def add_completion(
     db: Session, user_id: int, habit_id: int, data: HabitCompletionCreate
 ) -> HabitCompletion:
-    read_habit(db, user_id, habit_id)
+    read_habit(db, user_id, habit_id)  # ownership + existence check
+
     existing = db.execute(
         select(HabitCompletion).where(
             HabitCompletion.habit_id == habit_id, HabitCompletion.logged_at == data.logged_at
         )
-    )
+    ).scalar_one_or_none()
 
-    if existing:
-        raise ValueError("Already completed")
+    if existing is not None:
+        raise DuplicateError()
 
     completion = HabitCompletion(logged_at=data.logged_at, habit_id=habit_id)
 
@@ -75,7 +78,7 @@ def add_completion(
 def find_completion(
     db: Session, user_id: int, habit_id: int, completion_id: int
 ) -> HabitCompletion:
-    read_habit(db, user_id, habit_id)
+    read_habit(db, user_id, habit_id)  # ownership + existence check
 
     completion = db.execute(
         select(HabitCompletion).where(
@@ -85,13 +88,13 @@ def find_completion(
     ).scalar_one_or_none()
 
     if not completion:
-        raise ValueError("Completion not found")
+        raise NotFoundError()
 
     return completion
 
 
 def list_completions(db: Session, user_id: int, habit_id: int) -> list[HabitCompletion]:
-    read_habit(db, user_id, habit_id)
+    read_habit(db, user_id, habit_id)  # ownership + existence check
 
     completions = (
         db.execute(select(HabitCompletion).where(HabitCompletion.habit_id == habit_id))

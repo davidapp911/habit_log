@@ -1,0 +1,34 @@
+__all__ = [
+    "ServiceError",
+    "AuthenticationError",
+    "NotFoundError",
+    "DuplicateError",
+    "ForbiddenError",
+]
+
+
+class ServiceError(Exception):
+    def __init__(self, message, code) -> None:
+        super().__init__(message, code)
+        self.message = message
+        self.code = code
+
+
+class AuthenticationError(ServiceError):
+    def __init__(self) -> None:
+        super().__init__("Invalid credentials.", 401)
+
+
+class NotFoundError(ServiceError):
+    def __init__(self) -> None:
+        super().__init__("Not found.", 404)
+
+
+class ForbiddenError(ServiceError):
+    def __init__(self) -> None:
+        super().__init__("Forbidden.", 403)
+
+
+class DuplicateError(ServiceError):
+    def __init__(self) -> None:
+        super().__init__("Already exists.", 409)

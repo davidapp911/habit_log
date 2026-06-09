@@ -74,7 +74,7 @@ def test_duplicate_checkin(create_habit, completion_factory, client, auth_header
         headers=auth_headers,
     )
 
-    assert response.status_code == 404
+    assert response.status_code == 409
 
 
 @pytest.mark.streaks
@@ -87,4 +87,4 @@ def test_other_user_habit(habit_factory, client, auth_headers):
         headers=auth_headers,
     )
 
-    assert response.status_code == 404
+    assert response.status_code == 403
