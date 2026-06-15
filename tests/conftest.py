@@ -114,7 +114,8 @@ def create_multiple_completions(completion_factory):
     def _factory(pattern: list[int], habit=None):
         return [
             completion_factory.create(
-                habit=habit, logged_at=datetime.date.today() - datetime.timedelta(days=n)
+                habit=habit,
+                logged_at=datetime.date.today() - datetime.timedelta(days=n),
             )
             for n in pattern
         ]
@@ -123,7 +124,9 @@ def create_multiple_completions(completion_factory):
 
 
 @pytest.fixture(scope="function")
-def create_data_for_user(create_user, create_multiple_habits, create_multiple_completions):
+def create_data_for_user(
+    create_user, create_multiple_habits, create_multiple_completions
+):
     def _factory(habit_count, completions_patterns, user=None):
         target = user or create_user
         habits = create_multiple_habits(habit_count, user=target)

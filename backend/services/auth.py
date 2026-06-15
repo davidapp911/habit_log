@@ -9,7 +9,9 @@ from backend.schemas.user import LoginRequest, TokenResponse, UserCreate
 
 def register_user(db: Session, data: UserCreate) -> User:
     # check if email is in db
-    existing = db.execute(select(User).where(User.email == data.email)).scalar_one_or_none()
+    existing = db.execute(
+        select(User).where(User.email == data.email)
+    ).scalar_one_or_none()
 
     if existing:
         raise DuplicateError()
@@ -28,7 +30,9 @@ def register_user(db: Session, data: UserCreate) -> User:
 
 
 def authenticate_user(db: Session, data: LoginRequest) -> TokenResponse:
-    user = db.execute(select(User).where(User.username == data.username)).scalar_one_or_none()
+    user = db.execute(
+        select(User).where(User.username == data.username)
+    ).scalar_one_or_none()
 
     if not user:
         raise NotFoundError()

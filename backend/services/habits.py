@@ -59,7 +59,8 @@ def add_completion(
 
     existing = db.execute(
         select(HabitCompletion).where(
-            HabitCompletion.habit_id == habit_id, HabitCompletion.logged_at == data.logged_at
+            HabitCompletion.habit_id == habit_id,
+            HabitCompletion.logged_at == data.logged_at,
         )
     ).scalar_one_or_none()
 
@@ -105,7 +106,9 @@ def list_completions(db: Session, user_id: int, habit_id: int) -> list[HabitComp
     return list(completions)
 
 
-def delete_completion(db: Session, user_id: int, habit_id: int, completion_id: int) -> None:
+def delete_completion(
+    db: Session, user_id: int, habit_id: int, completion_id: int
+) -> None:
     completion = find_completion(db, user_id, habit_id, completion_id)
 
     db.delete(completion)

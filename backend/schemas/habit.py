@@ -9,7 +9,7 @@ class HabitCreate(BaseModel):
     frequency: str
 
 
-class HabitRead(BaseModel):
+class HabitResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: int
     name: str
@@ -23,11 +23,10 @@ class HabitUpdate(BaseModel):
 
 
 class HabitCompletionCreate(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
     logged_at: datetime.date
 
 
-class HabitCompletionRead(BaseModel):
+class HabitCompletionResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: int
     habit_id: int

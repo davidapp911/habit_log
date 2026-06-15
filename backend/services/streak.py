@@ -27,7 +27,9 @@ def calculate_current_streak(
         .all()
     )
 
-    descending_order = sorted(list(completions), key=lambda x: x.logged_at, reverse=True)
+    descending_order = sorted(
+        list(completions), key=lambda x: x.logged_at, reverse=True
+    )
     streak_length = 0
 
     if descending_order:

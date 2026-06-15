@@ -4,13 +4,12 @@ from pydantic import BaseModel, ConfigDict
 
 
 class UserCreate(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
     email: str
     username: str
     password: str
 
 
-class UserRead(BaseModel):
+class UserResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: int
     email: str
@@ -19,7 +18,6 @@ class UserRead(BaseModel):
 
 
 class LoginRequest(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
     username: str
     password: str
 

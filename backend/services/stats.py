@@ -16,7 +16,9 @@ def get_all_streaks(db: Session, user_id: int) -> list[StreakResponse]:
         StreakResponse(
             habit_id=h.id,
             name=h.name,
-            streak_length=calculate_current_streak(db, user_id, h.id, datetime.date.today()),
+            streak_length=calculate_current_streak(
+                db, user_id, h.id, datetime.date.today()
+            ),
         )
         for h in habits
     ]
@@ -36,7 +38,9 @@ def get_stats(db: Session, user_id: int, days: int) -> SummaryResponse:
     )
 
     habit_count = (
-        db.execute(select(func.count()).select_from(Habit).where(Habit.user_id == user_id)).scalar()
+        db.execute(
+            select(func.count()).select_from(Habit).where(Habit.user_id == user_id)
+        ).scalar()
         or 0
     )
 
@@ -46,4 +50,6 @@ def get_stats(db: Session, user_id: int, days: int) -> SummaryResponse:
 
     longest_streak = max((s.streak_length for s in streaks), default=0)
 
-    return SummaryResponse(completions=completions, missed=missed, longest_streak=longest_streak)
+    return SummaryResponse(
+        completions=completions, missed=missed, longest_streak=longest_streak
+    )

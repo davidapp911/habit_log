@@ -11,7 +11,9 @@ router = APIRouter()
 
 
 @router.get("/streaks", response_model=list[StreakResponse])
-def get_streaks(db: Session = Depends(database_session), user: User = Depends(current_user)):
+def get_streaks(
+    db: Session = Depends(database_session), user: User = Depends(current_user)
+):
     try:
         streaks = get_all_streaks(db, user.id)
     except ServiceError as e:
@@ -22,7 +24,9 @@ def get_streaks(db: Session = Depends(database_session), user: User = Depends(cu
 
 @router.get("/summary", response_model=SummaryResponse)
 def get_summary(
-    days: int = 7, db: Session = Depends(database_session), user: User = Depends(current_user)
+    days: int = 7,
+    db: Session = Depends(database_session),
+    user: User = Depends(current_user),
 ):
     try:
         stats = get_stats(db, user.id, days)

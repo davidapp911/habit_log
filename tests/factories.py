@@ -22,7 +22,9 @@ class UserFactory(BaseFactory):
 
     email = factory.Sequence(lambda n: f"user{n}@test.com")
     username = factory.Sequence(lambda n: f"user{n}")
-    hashed_password = factory.LazyFunction(lambda: hash_password(DEFAULT_TEST_USER_PASSWORD))
+    hashed_password = factory.LazyFunction(
+        lambda: hash_password(DEFAULT_TEST_USER_PASSWORD)
+    )
 
 
 class HabitFactory(BaseFactory):
