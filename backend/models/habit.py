@@ -24,7 +24,7 @@ class Habit(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
     user: Mapped[User] = relationship(back_populates="habits")
 
-    completions: Mapped[list[HabitCompletion]] = relationship(back_populates="habit")
+    completions: Mapped[list[HabitCompletion]] = relationship(back_populates="habit", passive_deletes=True)
 
 
 class HabitCompletion(Base):

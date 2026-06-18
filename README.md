@@ -4,10 +4,12 @@
 
 Personal habit tracker with daily check-ins, streak tracking, and completion stats.
 
+**Live:** [htracker-tau.vercel.app](https://htracker-tau.vercel.app)
+
 ## Stack
 
 - **Backend** — FastAPI, PostgreSQL, SQLAlchemy 2.0, Alembic, PyJWT
-- **Frontend** — React, Vite, Tailwind CSS *(in progress)*
+- **Frontend** — React, Vite, Tailwind CSS, Recharts
 - **Infra** — Docker (local Postgres), Railway (backend), Vercel (frontend)
 
 ## Getting started
