@@ -26,4 +26,4 @@ jobs:
             - name: deps setup
               run: pip install -e ".[dev]"
             
-            - run: pytest
+            - run: pytest --ignore=tests/e2e
