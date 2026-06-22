@@ -61,8 +61,7 @@ def auth_headers(create_user, db_session):
 def expired_token_headers(create_user, db_session):
     payload = {
         "sub": str(create_user.id),
-        "exp": datetime.datetime.now(datetime.timezone.utc)
-        - datetime.timedelta(minutes=1),
+        "exp": datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(minutes=1),
     }
 
     return {
@@ -147,9 +146,7 @@ def create_multiple_completions(completion_factory):
 
 
 @pytest.fixture(scope="function")
-def create_data_for_user(
-    create_user, create_multiple_habits, create_multiple_completions
-):
+def create_data_for_user(create_user, create_multiple_habits, create_multiple_completions):
     def _factory(habit_count, completions_patterns, user=None):
         target = user or create_user
         habits = create_multiple_habits(habit_count, user=target)

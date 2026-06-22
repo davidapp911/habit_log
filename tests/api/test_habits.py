@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 
 from backend.schemas.habit import HabitCompletionResponse, HabitResponse
@@ -219,7 +221,7 @@ def test_update_habit_invalid_type(client, auth_headers, create_habit):
     assert response.status_code == 422
 
 
-@pytest.mark.focus
+@pytest.mark.habits
 def test_check_in_invalid_date(client, auth_headers, create_habit):
     response = client.post(
         f"/habits/{create_habit.id}/logs",
@@ -228,3 +230,28 @@ def test_check_in_invalid_date(client, auth_headers, create_habit):
     )
 
     assert response.status_code == 422
+
+
+@pytest.mark.streaks
+def test_duplicate_checkin(create_habit, completion_factory, client, auth_headers):
+    completion_factory.create(habit=create_habit, logged_at=datetime.date.today())
+    response = client.post(
+        f"/habits/{create_habit.id}/logs",
+        json={"logged_at": datetime.date.today().isoformat()},
+        headers=auth_headers,
+    )
+
+    assert response.status_code == 409
+
+
+@pytest.mark.streaks
+def test_other_user_habit(habit_factory, client, auth_headers):
+    habit = habit_factory.create()
+
+    response = client.post(
+        f"/habits/{habit.id}/logs",
+        json={"logged_at": datetime.date.today().isoformat()},
+        headers=auth_headers,
+    )
+
+    assert response.status_code == 403
