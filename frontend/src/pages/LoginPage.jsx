@@ -42,6 +42,11 @@ export default function LoginPage() {
                         {loading ? "Logging in…" : "Log in"}
                     </Button>
                 </form>
+                <p className="text-gray-500 dark:text-gray-400 text-sm text-center mt-6">
+                    Just here to look around? Use{" "}
+                    <span className="font-medium text-gray-700 dark:text-gray-300">showcase_user</span> /{" "}
+                    <span className="font-medium text-gray-700 dark:text-gray-300">password123</span>
+                </p>
             </div>
         </div>
     );
